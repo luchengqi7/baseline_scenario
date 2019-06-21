@@ -21,19 +21,18 @@ import ch.ethz.matsim.baseline_scenario.analysis.trips.utils.BaselineHomeActivit
 import ch.ethz.matsim.baseline_scenario.analysis.trips.utils.HomeActivityTypes;
 
 public class ConvertTripsFromEvents {
-	static public void main(String[] args) throws IOException {
-		Network network = NetworkUtils.createNetwork();
-		new MatsimNetworkReader(network).readFile(args[0]);
+    static public void main(String[] args) throws IOException {
+        Network network = NetworkUtils.createNetwork();
+        new MatsimNetworkReader(network).readFile("/home/pc/Desktop/NewSiouxFalls/preparedNetwork.xml");
 
-		StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE);
-		HomeActivityTypes homeActivityTypes = new BaselineHomeActivityTypes();
-		MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
-		Collection<String> networkRouteModes = Arrays.asList("car");
+        StageActivityTypes stageActivityTypes = new StageActivityTypesImpl(PtConstants.TRANSIT_ACTIVITY_TYPE);
+        HomeActivityTypes homeActivityTypes = new BaselineHomeActivityTypes();
+        MainModeIdentifier mainModeIdentifier = new MainModeIdentifierImpl();
+        Collection<String> networkRouteModes = Arrays.asList("car");
 
-		TripListener tripListener = new TripListener(network, stageActivityTypes, homeActivityTypes, mainModeIdentifier,
-				networkRouteModes);
-		Collection<TripItem> trips = new EventsTripReader(tripListener).readTrips(args[1]);
+        TripListener tripListener = new TripListener(network, stageActivityTypes, homeActivityTypes, mainModeIdentifier, networkRouteModes);
+        Collection<TripItem> trips = new EventsTripReader(tripListener).readTrips("/home/pc/Desktop/NewSiouxFalls/output/costAnalysis/001/output_events.xml.gz");
 
-		new CSVTripWriter(trips).write(args[2]);
-	}
+        new CSVTripWriter(trips).write("/home/pc/Desktop/NewSiouxFalls/output/costAnalysis/001/result.csv");
+    }
 }
