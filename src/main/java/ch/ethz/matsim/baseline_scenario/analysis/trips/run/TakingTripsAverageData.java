@@ -22,11 +22,12 @@ import java.util.Properties;
         Map<Double, AVTripsTotalDataGroup> dataMapAV = new HashMap<>();
 
         for (File resultFolder : simResultsDirectory.listFiles()) {
+            System.out.println("now processing: " + resultFolder.getPath());
             // Read simulation info
             Properties simulationInfo = new Properties();
             try {
                 simulationInfo.load(new FileInputStream//
-                (resultFolder.getName() + "/" + resultFolder.getName() + ".properties"));
+                (resultFolder.getPath() + "/" + resultFolder.getName() + ".properties"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -34,20 +35,20 @@ import java.util.Properties;
             Properties carTripsData = new Properties();
             try {
                 carTripsData.load(new FileInputStream//
-                (resultFolder.getName() + "/analyzedResult.properties"));
+                (resultFolder.getPath() + "/analyzedResult.properties"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
             // Load av trips data
             Properties avTripsData = new Properties();
             try {
-                carTripsData.load(new FileInputStream//
-                (resultFolder.getName() + "/data/totalSimulationValues.properties"));
+                avTripsData.load(new FileInputStream//
+                (resultFolder.getPath() + "/data/totalSimulationValues.properties"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            double rtShare = Double.parseDouble(simulationInfo.getProperty("rtShare"));
+            double rtShare = Double.parseDouble(simulationInfo.getProperty("rtshare"));
 
             // store car trips gross data in data map
             double carMeanDriveTime = Double.parseDouble(carTripsData.getProperty("meanTravelTime"));
@@ -64,7 +65,7 @@ import java.util.Properties;
                 dataMapCar.put(rtShare, newCarTripsDataGroup);
             }
             // Store av trips data in data map
-            double avMeanDriveTime = Double.parseDouble(avTripsData.getProperty("MeanDriveTime"));
+            double avMeanDriveTime = Double.parseDouble(avTripsData.getProperty("MeanDriveTime")) - 25;
             double avTotalDistance = Double.parseDouble(avTripsData.getProperty("TotalRoboTaxiDistance"));
             int numOfAVTrips = Integer.parseInt(avTripsData.getProperty("totalRequests"));
             double avMeanWaitTime = Double.parseDouble(avTripsData.getProperty("MeanWaitingTime"));
@@ -82,11 +83,20 @@ import java.util.Properties;
                 (avTripsTotalDataGroup, dataMapAV.get(rtShare));
                 dataMapAV.put(rtShare, newAVTripsTotalDataGroup);
             }
+            // internal double check
+            int totalTrips = numberOfCarTrips + numOfAVTrips;
+            if (totalTrips != 36148) { // Sioux Falls population cutter seeds 1234 --> 36148 total requests
+                System.out.println(totalTrips);
+                System.err.println("Warning: Something is wrong!!!!!");
+                System.err.println("However, if it is not in Sioux Falls, you can ignore this warning.");
+            } else {
+                System.out.println("internal check passed!");
+            }
         }
         System.out.println("averaging process complete!");
         // write in csv file
         System.out.println("now writing final result in csv file");
-        FileWriter csvWriter = new FileWriter("simResultsDirectory/mixedResults.csv");
+        FileWriter csvWriter = new FileWriter(simResultsDirectory.getPath() + "/mixedResults.csv");
         // making title row
         csvWriter.append("RTShare");
         csvWriter.append(",");
@@ -126,7 +136,7 @@ import java.util.Properties;
             csvWriter.append(",");
             double carMeanDT = dataMapCar.get(rtShare).getDriveTime() / dataMapCar.get(rtShare).getNumberOfTrips();
             csvWriter.append(Double.toString(carMeanDT));
-            csvWriter.append(",");
+            csvWriter.append("\n");
         }
         csvWriter.flush();
         csvWriter.close();

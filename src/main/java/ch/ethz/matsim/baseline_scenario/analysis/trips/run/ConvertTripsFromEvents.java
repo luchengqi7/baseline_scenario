@@ -31,8 +31,8 @@ public class ConvertTripsFromEvents {
         Collection<String> networkRouteModes = Arrays.asList("car");
 
         TripListener tripListener = new TripListener(network, stageActivityTypes, homeActivityTypes, mainModeIdentifier, networkRouteModes);
-        Collection<TripItem> trips = new EventsTripReader(tripListener).readTrips("/home/pc/Desktop/NewSiFBenchmark/output/001/output_events.xml.gz");
+        Collection<TripItem> trips = new EventsTripReader(tripListener).readTrips("/home/pc/Desktop/NewSiouxFalls/output/boundaryConditions/latest/output_events.xml.gz");
 
-        new CSVTripWriter(trips).write("/home/pc/Desktop/NewSiFBenchmark/output/001/result.csv");
+        new CSVTripWriter(trips).write("/home/pc/Desktop/NewSiouxFalls/output/boundaryConditions/latest/result.csv");
     }
 }

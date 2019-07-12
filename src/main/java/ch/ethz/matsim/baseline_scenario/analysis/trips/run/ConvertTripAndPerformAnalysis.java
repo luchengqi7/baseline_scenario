@@ -52,16 +52,17 @@ public class ConvertTripAndPerformAnalysis {
         System.out.println("Begin result harvesting processing");
         ConvertTripAndPerformAnalysis resultHarvester = new ConvertTripAndPerformAnalysis();
         // step 1. change to the folder
-        File simResultsDirectory = new File("input/simulation/output/folder/path/here");
+        File simResultsDirectory = new File("/home/pc/Desktop/NewSiouxFalls/output/mixedCase");
         for (File simulationDataFolder : simResultsDirectory.listFiles()) {
             // step 2. convert trips from event
-            resultHarvester.convertTripFromEvents(simulationDataFolder.getName());
+            System.out.println(simulationDataFolder.getPath());
+            resultHarvester.convertTripFromEvents(simulationDataFolder.getPath());
             // step 3. analyze trips data and store in a file
-            resultHarvester.scanFile(simulationDataFolder);
+            resultHarvester.scanFile(new File(simulationDataFolder.getPath() + "/result.csv"));
             resultHarvester.processData();
-            File outFile = new File(simulationDataFolder.getName() + "analyzedResult.properties");
+            File outFile = new File(simulationDataFolder.getPath() + "/analyzedResult.properties");
             resultHarvester.storeData(outFile);
-            System.out.println("Analysis in " + simulationDataFolder.getName() + " is complete!");
+            System.out.println("Analysis in " + simulationDataFolder.getPath() + " is complete!");
         }
 
         // TODO step 4. output the averaged data in csv file
@@ -73,6 +74,7 @@ public class ConvertTripAndPerformAnalysis {
     // 1. scan the file and store the data in a list of list
     public void scanFile(File file) throws FileNotFoundException, IOException {
         System.out.println("Starting data collection now!");
+        records.clear();
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine())
                 records.add(getRecordFromLine(scanner.nextLine()));
@@ -95,6 +97,8 @@ public class ConvertTripAndPerformAnalysis {
     // 2. process data
     private void processData() {
         System.out.println("Starting data Processing now!");
+        listOfTravelDistance.clear();
+        listOfTravelTime.clear();
         for (List<String> trip : records)
             if (trip.get(INDEX_TRAVEL_MODE).equals("car")) {
                 // then we record this data
