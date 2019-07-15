@@ -11,7 +11,6 @@ import java.util.Properties;
 /*package*/ enum TakingTripsAverageData {
     ;
 
-    // TODO recognize number of seeds automatically (which allows various seeds number for different setups)
     private static final double[] rtShares = { 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75 };
 
     static void run(File simResultsDirectory) throws IOException {
