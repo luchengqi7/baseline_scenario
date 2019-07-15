@@ -12,7 +12,7 @@ import java.util.Properties;
     ;
 
     // TODO recognize number of seeds automatically (which allows various seeds number for different setups)
-    private static final int NUMBER_OF_SEEDS = 3;
+    private static final int DEFAULT_NUM_OF_SEEDS = 3;
     private static final double[] rtShares = { 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75 };
 
     static void run(File simResultsDirectory) throws IOException {
@@ -56,7 +56,7 @@ import java.util.Properties;
             int numberOfCarTrips = Integer.parseInt(carTripsData.getProperty("numberOfCarTrip"));
             double carGrossDriveTime = carMeanDriveTime * numberOfCarTrips;
             CarTripsTotalDataGroup carTripsTotalDataGroup = //
-                    new CarTripsTotalDataGroup(carGrossDriveTime, carTotalDistance, numberOfCarTrips);
+                    new CarTripsTotalDataGroup(carGrossDriveTime, carTotalDistance, numberOfCarTrips, 1);
             if (!dataMapCar.containsKey(rtShare)) {
                 dataMapCar.put(rtShare, carTripsTotalDataGroup);
             } else {
@@ -74,7 +74,7 @@ import java.util.Properties;
             double avGrossWaitTime = avMeanWaitTime * numOfAVTrips;
 
             AVTripsTotalDataGroup avTripsTotalDataGroup = new AVTripsTotalDataGroup//
-            (avGrossDriveTime, avTotalDistance, numOfAVTrips, avGrossWaitTime, avMedianWaitTime);
+            (avGrossDriveTime, avTotalDistance, numOfAVTrips, avGrossWaitTime, avMedianWaitTime, 1);
 
             if (!dataMapAV.containsKey(rtShare)) {
                 dataMapAV.put(rtShare, avTripsTotalDataGroup);
@@ -122,7 +122,7 @@ import java.util.Properties;
             csvWriter.append(",");
             double systemTotalDistance = //
                     (dataMapCar.get(rtShare).getDistance() + dataMapAV.get(rtShare).getDistance())//
-                            / NUMBER_OF_SEEDS;
+                            / dataMapAV.get(rtShare).getNumberOfSeeds();
             csvWriter.append(Double.toString(systemTotalDistance));
             csvWriter.append(",");
             double avMeanDT = dataMapAV.get(rtShare).getDriveTime() / dataMapAV.get(rtShare).getNumberOfTrips();
@@ -131,7 +131,7 @@ import java.util.Properties;
             double avMeanWT = dataMapAV.get(rtShare).getMeanWaitTime() / dataMapAV.get(rtShare).getNumberOfTrips();
             csvWriter.append(Double.toString(avMeanWT));
             csvWriter.append(",");
-            double avMedianWT = dataMapAV.get(rtShare).getMedianWaitTime() / NUMBER_OF_SEEDS;
+            double avMedianWT = dataMapAV.get(rtShare).getMedianWaitTime() / dataMapAV.get(rtShare).getNumberOfSeeds();
             csvWriter.append(Double.toString(avMedianWT));
             csvWriter.append(",");
             double carMeanDT = dataMapCar.get(rtShare).getDriveTime() / dataMapCar.get(rtShare).getNumberOfTrips();
