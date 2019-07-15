@@ -12,7 +12,6 @@ import java.util.Properties;
     ;
 
     // TODO recognize number of seeds automatically (which allows various seeds number for different setups)
-    private static final int DEFAULT_NUM_OF_SEEDS = 3;
     private static final double[] rtShares = { 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75 };
 
     static void run(File simResultsDirectory) throws IOException {
